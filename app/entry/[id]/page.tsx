@@ -2,9 +2,7 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { CopyButton } from '@/components/copy-button'
-import { SnsGuide } from '@/components/sns-guide'
+import { EntryTabs } from '@/components/entry-tabs'
 
 export default async function EntryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -33,42 +31,7 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        {entry.my_view && (
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">🙋 나의 관점</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-700 whitespace-pre-wrap">{entry.my_view}</p>
-            </CardContent>
-          </Card>
-        )}
-
-        {entry.sns_view && (
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">📱 SNS 포스팅</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-700 whitespace-pre-wrap">{entry.sns_view}</p>
-              <CopyButton text={entry.sns_view} />
-              <SnsGuide />
-            </CardContent>
-          </Card>
-        )}
-
-        {entry.expert_view && (
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">👔 전문가 요약</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-700 whitespace-pre-wrap">{entry.expert_view}</p>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+      <EntryTabs entry={entry} />
     </main>
   )
 }

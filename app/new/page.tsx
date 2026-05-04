@@ -95,7 +95,7 @@ export default function NewEntryPage() {
           </CardHeader>
           <CardContent>
             <Textarea
-              placeholder="예: Next.js 앱 배포 완료, Supabase 테이블 구조 변경 (선택사항)"
+              placeholder="예: Claude Code로 Next.js 앱 설계부터 Vercel 배포까지 완성. Supabase 연결, RLS 비활성화로 MVP 구성. 사용 도구: Next.js 15, Supabase, TypeScript"
               value={expertView}
               onChange={(e) => setExpertView(e.target.value)}
               rows={2}

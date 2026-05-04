@@ -24,15 +24,41 @@ function extractTodaySection(content: string, date: string): string {
 }
 
 function extractExpertSummary(content: string): string {
-  // "오늘 만든 것" 섹션에서 번호 목록 추출
+  // 기술 스택 추출
+  const stackSection = content.match(/## 기술 스택\n([\s\S]*?)(?=\n##|$)/)
+  const stackLines = stackSection
+    ? stackSection[1].trim().split('\n')
+        .filter(l => l.startsWith('-'))
+        .map(l => l.replace(/^-\s+\*\*[^*]+\*\*:\s*/, '').trim())
+        .join(', ')
+    : ''
+
+  // 오늘 만든 것 추출 (파일명 제외, 설명만)
   const madeSection = content.match(/## 오늘 만든 것\n([\s\S]*?)(?=\n##|$)/)
-  if (madeSection) {
-    const lines = madeSection[1].trim().split('\n').filter(l => l.startsWith('1.') || l.startsWith('2.') || l.startsWith('3.'))
-    if (lines.length) return lines.join(', ').replace(/\*\*/g, '').replace(/\d+\. /g, '').trim()
-  }
-  // fallback: 첫 번째 의미있는 줄들
-  const lines = content.split('\n').filter(l => l.trim() && !l.startsWith('#')).slice(0, 2)
-  return lines.join(' ').trim()
+  const madeLines = madeSection
+    ? madeSection[1].trim().split('\n')
+        .filter(l => /^\d+\./.test(l))
+        .map(l => l
+          .replace(/^\d+\.\s+/, '')
+          .replace(/\*\*[^*]+\*\*\s*—\s*/, '') // 파일명 제거
+          .replace(/`[^`]+`/g, '')              // 코드 제거
+          .trim()
+        )
+        .filter(l => l.length > 5)
+        .slice(0, 3)
+    : []
+
+  // 배포 주소 추출
+  const deployMatch = content.match(/https:\/\/[a-z0-9-]+\.vercel\.app/)
+  const deployUrl = deployMatch ? deployMatch[0] : ''
+
+  // 조합
+  const parts: string[] = []
+  if (madeLines.length) parts.push(madeLines.join(', '))
+  if (stackLines) parts.push(`사용 도구: ${stackLines}`)
+  if (deployUrl) parts.push(`배포: ${deployUrl}`)
+
+  return parts.join('\n') || content.split('\n').find(l => l.trim() && !l.startsWith('#')) || ''
 }
 
 async function main() {
