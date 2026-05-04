@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CopyButton } from '@/components/copy-button'
+import { SnsGuide } from '@/components/sns-guide'
 
 export default async function EntryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -52,6 +53,7 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
             <CardContent>
               <p className="text-gray-700 whitespace-pre-wrap">{entry.sns_view}</p>
               <CopyButton text={entry.sns_view} />
+              <SnsGuide />
             </CardContent>
           </Card>
         )}
