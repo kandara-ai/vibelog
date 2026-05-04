@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import { CopyButton } from '@/components/copy-button'
 import { SnsGuide } from '@/components/sns-guide'
+import { Button } from '@/components/ui/button'
 
 type Entry = {
   id: number
@@ -21,23 +23,34 @@ const tabs = [
 
 export function EntryTabs({ entry }: { entry: Entry }) {
   const [active, setActive] = useState('my')
+  const router = useRouter()
 
   return (
     <div>
-      <div className="flex gap-2 mb-4 border-b">
-        {tabs.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActive(tab.key)}
-            className={`pb-2 px-1 text-sm font-medium transition-colors ${
-              active === tab.key
-                ? 'border-b-2 border-black text-black'
-                : 'text-gray-400 hover:text-gray-600'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className="flex items-center justify-between mb-4 border-b">
+        <div className="flex gap-2">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActive(tab.key)}
+              className={`pb-2 px-1 text-sm font-medium transition-colors ${
+                active === tab.key
+                  ? 'border-b-2 border-black text-black'
+                  : 'text-gray-400 hover:text-gray-600'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          className="mb-2"
+          onClick={() => router.push(`/entry/${entry.id}/edit?tab=${active}`)}
+        >
+          ✏️ 수정
+        </Button>
       </div>
 
       {active === 'my' && (

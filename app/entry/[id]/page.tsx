@@ -25,14 +25,9 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
     <main className="max-w-2xl mx-auto px-4 py-10">
       <div className="mb-6">
         <Link href="/" className="text-sm text-gray-400 hover:text-gray-600">← 목록으로</Link>
-        <div className="flex items-center justify-between mt-2">
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold">📖 학습 일지</h1>
-            <Badge variant="outline">{entry.date}</Badge>
-          </div>
-          <Link href={`/entry/${entry.id}/edit`}>
-            <Button variant="outline" size="sm">✏️ 수정</Button>
-          </Link>
+        <div className="flex items-center gap-2 mt-2">
+          <h1 className="text-2xl font-bold">📖 학습 일지</h1>
+          <Badge variant="outline">{entry.date}</Badge>
         </div>
       </div>
 
