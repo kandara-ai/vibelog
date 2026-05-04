@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --no-src-dir --import-alias \"@/*\" --yes)",
+      "Read(//d/kyra-test/projects/**)",
+      "Bash(mkdir -p vibelog-temp)",
+      "Bash(cp vibelog/os-blueprint.md vibelog-temp/)",
+      "Bash(cp vibelog/vibelog.prd.md vibelog-temp/)",
+      "Bash(npx create-next-app@latest vibelog --typescript --tailwind --eslint --app --no-src-dir --import-alias \"@/*\" --yes)",
+      "Bash(mv \"D:/kyra-test/projects/vibelog/os-blueprint.md\" \"D:/kyra-test/projects/vibelog-temp/\")",
+      "Bash(mv \"D:/kyra-test/projects/vibelog/vibelog.prd.md\" \"D:/kyra-test/projects/vibelog-temp/\")",
+      "Bash(mv \"D:/kyra-test/projects/vibelog/.claude\" \"D:/kyra-test/projects/vibelog-temp/\")",
+      "Bash(mv \"D:/kyra-test/projects/vibelog-temp/os-blueprint.md\" \"D:/kyra-test/projects/vibelog/\")",
+      "Bash(mv \"D:/kyra-test/projects/vibelog-temp/vibelog.prd.md\" \"D:/kyra-test/projects/vibelog/\")",
+      "Bash(mv \"D:/kyra-test/projects/vibelog-temp/.claude\" \"D:/kyra-test/projects/vibelog/\")",
+      "Bash(npx shadcn@latest init --yes --defaults)",
+      "Bash(npx shadcn@latest add textarea card badge --yes)",
+      "Bash(npm install *)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
+    ]
+  }
+}

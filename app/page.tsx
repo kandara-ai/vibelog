@@ -15,7 +15,7 @@ export default async function Home() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold">📚 Vibelog</h1>
-          <p className="text-gray-500 mt-1">오늘 배운 것을 기록해요</p>
+          <p className="text-gray-500 mt-1">오늘 한 것을 기록해요</p>
         </div>
         <div className="flex gap-2">
           <Link href="/concepts">
@@ -40,20 +40,22 @@ export default async function Home() {
           <Link key={entry.id} href={`/entry/${entry.id}`}>
             <Card className="hover:shadow-md transition-shadow cursor-pointer">
               <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
                   <Badge variant="outline">{entry.date}</Badge>
                 </div>
-                <CardTitle className="text-base line-clamp-2">
-                  {entry.learned}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {entry.stuck && (
-                  <p className="text-sm text-orange-500">
-                    🤔 막힌 부분: {entry.stuck}
-                  </p>
+                {entry.my_view && (
+                  <CardTitle className="text-base line-clamp-2 mt-1">
+                    {entry.my_view}
+                  </CardTitle>
                 )}
-              </CardContent>
+              </CardHeader>
+              {entry.expert_view && (
+                <CardContent>
+                  <p className="text-sm text-gray-500 line-clamp-1">
+                    👔 {entry.expert_view}
+                  </p>
+                </CardContent>
+              )}
             </Card>
           </Link>
         ))}

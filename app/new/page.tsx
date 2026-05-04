@@ -12,23 +12,23 @@ export default function NewEntryPage() {
   const today = new Date().toISOString().split('T')[0]
 
   const [date, setDate] = useState(today)
-  const [learned, setLearned] = useState('')
-  const [made, setMade] = useState('')
-  const [stuck, setStuck] = useState('')
+  const [myView, setMyView] = useState('')
+  const [snsView, setSnsView] = useState('')
+  const [expertView, setExpertView] = useState('')
   const [saving, setSaving] = useState(false)
 
   async function handleSave() {
-    if (!learned.trim()) {
-      alert('오늘 배운 내용을 입력해주세요!')
+    if (!myView.trim()) {
+      alert('나의 관점을 입력해주세요!')
       return
     }
 
     setSaving(true)
     const { error } = await supabase.from('entries').insert({
       date,
-      learned,
-      made,
-      stuck,
+      my_view: myView,
+      sns_view: snsView,
+      expert_view: expertView,
     })
 
     if (error) {
@@ -44,7 +44,7 @@ export default function NewEntryPage() {
     <main className="max-w-2xl mx-auto px-4 py-10">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">✏️ 오늘 일지 쓰기</h1>
-        <p className="text-gray-500 mt-1">오늘 배운 것을 내 말로 기록해요</p>
+        <p className="text-gray-500 mt-1">오늘 한 것을 세 가지 관점으로 기록해요</p>
       </div>
 
       <div className="flex flex-col gap-4">
@@ -60,13 +60,29 @@ export default function NewEntryPage() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">📖 오늘 배운 개념</CardTitle>
+            <CardTitle className="text-base">🙋 나의 관점</CardTitle>
+            <p className="text-xs text-gray-400">오늘 배운 것, 만든 것, 막힌 것을 내 말로 자유롭게</p>
           </CardHeader>
           <CardContent>
             <Textarea
-              placeholder="오늘 배운 것을 내 말로 써보세요. 완벽하지 않아도 괜찮아요!"
-              value={learned}
-              onChange={(e) => setLearned(e.target.value)}
+              placeholder="오늘 무엇을 했나요? 어떻게 느꼈나요? 막힌 부분은요?"
+              value={myView}
+              onChange={(e) => setMyView(e.target.value)}
+              rows={6}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">📱 SNS 포스팅</CardTitle>
+            <p className="text-xs text-gray-400">스레드·인스타용 — write-post로 자동 생성되거나 직접 작성</p>
+          </CardHeader>
+          <CardContent>
+            <Textarea
+              placeholder="SNS에 올릴 내용을 써보세요 (선택사항)"
+              value={snsView}
+              onChange={(e) => setSnsView(e.target.value)}
               rows={4}
             />
           </CardContent>
@@ -74,28 +90,15 @@ export default function NewEntryPage() {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">🛠️ 오늘 만든 것</CardTitle>
+            <CardTitle className="text-base">👔 전문가 요약</CardTitle>
+            <p className="text-xs text-gray-400">신랑·멘토용 — 오늘 한 것을 한두 줄로</p>
           </CardHeader>
           <CardContent>
             <Textarea
-              placeholder="오늘 직접 만들거나 따라 해본 것을 써주세요"
-              value={made}
-              onChange={(e) => setMade(e.target.value)}
-              rows={3}
-            />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base">🤔 막힌 부분</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Textarea
-              placeholder="어디서 막혔나요? 어떤 부분이 아직 헷갈리나요?"
-              value={stuck}
-              onChange={(e) => setStuck(e.target.value)}
-              rows={3}
+              placeholder="예: Next.js 앱 배포 완료, Supabase 테이블 구조 변경 (선택사항)"
+              value={expertView}
+              onChange={(e) => setExpertView(e.target.value)}
+              rows={2}
             />
           </CardContent>
         </Card>

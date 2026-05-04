@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CopyButton } from '@/components/copy-button'
 
 export default async function EntryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -32,33 +33,36 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
       </div>
 
       <div className="flex flex-col gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base">📖 오늘 배운 개념</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-700 whitespace-pre-wrap">{entry.learned}</p>
-          </CardContent>
-        </Card>
-
-        {entry.made && (
+        {entry.my_view && (
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-base">🛠️ 오늘 만든 것</CardTitle>
+              <CardTitle className="text-base">🙋 나의 관점</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700 whitespace-pre-wrap">{entry.made}</p>
+              <p className="text-gray-700 whitespace-pre-wrap">{entry.my_view}</p>
             </CardContent>
           </Card>
         )}
 
-        {entry.stuck && (
-          <Card className="border-orange-200">
+        {entry.sns_view && (
+          <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-base text-orange-600">🤔 막힌 부분</CardTitle>
+              <CardTitle className="text-base">📱 SNS 포스팅</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700 whitespace-pre-wrap">{entry.stuck}</p>
+              <p className="text-gray-700 whitespace-pre-wrap">{entry.sns_view}</p>
+              <CopyButton text={entry.sns_view} />
+            </CardContent>
+          </Card>
+        )}
+
+        {entry.expert_view && (
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">👔 전문가 요약</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-700 whitespace-pre-wrap">{entry.expert_view}</p>
             </CardContent>
           </Card>
         )}
