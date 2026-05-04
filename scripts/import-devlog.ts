@@ -80,12 +80,22 @@ async function main() {
     ? fs.readFileSync(caseStudyPath, 'utf-8')
     : ''
 
+  // EXPERT_VIEW.md가 있으면 우선 사용, 없으면 자동 추출
+  const expertViewPath = path.join(process.cwd(), 'EXPERT_VIEW.md')
+  const finalExpertView = fs.existsSync(expertViewPath)
+    ? (() => {
+        const content = fs.readFileSync(expertViewPath, 'utf-8')
+        console.log('📋 EXPERT_VIEW.md에서 전문가 요약을 읽었어요.')
+        return content.trim()
+      })()
+    : expertView
+
   // Supabase에 저장
   const { error } = await supabase.from('entries').insert({
     date: today,
     my_view: myView,
     sns_view: snsView,
-    expert_view: expertView,
+    expert_view: finalExpertView,
   })
 
   if (error) {

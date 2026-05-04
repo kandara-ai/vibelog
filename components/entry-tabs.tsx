@@ -50,9 +50,9 @@ export function EntryTabs({ entry }: { entry: Entry }) {
       )}
 
       {active === 'expert' && (
-        <div>
+        <div className="prose prose-sm max-w-none text-gray-700">
           {entry.expert_view
-            ? <p className="text-gray-700 text-base leading-relaxed">{entry.expert_view}</p>
+            ? <ReactMarkdown>{entry.expert_view}</ReactMarkdown>
             : <p className="text-gray-400">아직 작성된 내용이 없어요.</p>
           }
         </div>
