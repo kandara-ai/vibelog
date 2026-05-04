@@ -47,14 +47,14 @@ export default async function Home() {
                 </div>
                 {entry.my_view && (
                   <CardTitle className="text-base line-clamp-2 mt-1">
-                    {entry.my_view}
+                    {entry.my_view.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').replace(/`/g, '').trim()}
                   </CardTitle>
                 )}
               </CardHeader>
               {entry.expert_view && (
                 <CardContent>
                   <p className="text-sm text-gray-500 line-clamp-1">
-                    👔 {entry.expert_view}
+                    👔 {entry.expert_view.replace(/\*\*/g, '').replace(/`/g, '')}
                   </p>
                 </CardContent>
               )}
