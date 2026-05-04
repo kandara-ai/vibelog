@@ -147,27 +147,156 @@ npm run dev                     ← 개발 서버 시작
 
 ---
 
+### 6. 일지 구조를 3가지 관점으로 재설계
+
+```
+나의 관점, SNS 포스팅 관점, 전문가(신랑) 관점 — 이렇게 세 가지로 나눠서 저장하고 싶어.
+```
+
+**Claude Code 작업:**
+- Supabase `entries` 테이블 컬럼 재구성
+  - 기존: `learned`, `made`, `stuck` → 삭제
+  - 신규: `my_view`, `sns_view`, `expert_view` — 같은 내용을 보는 사람에 따라 다르게 표현
+- `app/new/page.tsx` — 3가지 관점 입력 폼으로 교체
+- `components/entry-tabs.tsx` — 탭으로 3가지 관점 전환하는 컴포넌트 생성
+- `concept_notes` 테이블 별도 생성 — 개념 공부를 일지와 분리해서 쌓는 공간
+
+**🤔 이 과정에서 배운 것:**
+> 같은 내용을 세 명이 본다: "나"(기억용), "SNS 팔로워"(공유용), "신랑"(검증용). 데이터는 하나인데 보는 방식을 다르게 만드는 게 핵심이었다.
+
+---
+
+### 7. Vercel 배포 완료
+
+```
+이게 자동으로 배포될 수 있도록 해줘.
+```
+
+**직접 한 것 (Vercel 웹사이트에서):**
+1. GitHub `kandara-ai/vibelog` 리포지토리를 Vercel에 연결
+2. `.env.local`의 환경변수 2개를 Vercel에 입력 (Import .env 기능 활용)
+3. Deploy 클릭 → 자동 빌드 및 배포
+
+**배포된 주소:** https://vibelog-eta.vercel.app
+
+**앱이 비어 보이는 문제 → 두 가지 원인 발견 및 해결:**
+1. Supabase RLS(행 레벨 보안)가 다시 켜져 있었음 → SQL로 비활성화
+2. Next.js 서버가 데이터를 캐시해서 새 데이터를 안 가져옴 → `export const dynamic = 'force-dynamic'` 추가
+
+**🤔 이 과정에서 배운 것:**
+> Vercel 배포 = GitHub에 코드를 올리면 Vercel이 자동으로 웹사이트를 다시 만들어줌. 코드를 바꿀 때마다 git push만 하면 자동으로 반영됨.
+> `force-dynamic`이란: Next.js가 "이 페이지는 매번 새로 불러와야 해"라고 알려주는 것. 이게 없으면 한 번 캐시된 내용을 계속 보여줘서 새 일지가 안 보임.
+
+---
+
+### 8. 마크다운 렌더링 및 탭 UI 구현
+
+```
+md파일 형식으로 전달되어 읽기도 불편해. 스크롤이 너무 많이 되.
+```
+
+**Claude Code 작업:**
+- `npm install react-markdown` — 마크다운을 예쁘게 보여주는 도구 설치
+- `components/entry-tabs.tsx` — 3가지 관점을 탭으로 전환하는 UI 구현
+  - 나의 관점, 전문가 요약, SNS 탭 전환
+  - 마크다운 텍스트 → 제목·굵게·목록 등으로 자동 변환
+- `components/copy-button.tsx` — SNS 탭에 복사 버튼 추가 ("복사됨!" 피드백 포함)
+- `components/sns-guide.tsx` — 스폰지클럽 1기 SNS 업로드 가이드 접이식 메뉴
+
+**🤔 이 과정에서 배운 것:**
+> 마크다운이란 `**굵게**`, `## 제목` 같은 기호로 서식을 표현하는 방식. 저장할 때는 기호 그대로 저장되고, 화면에 보여줄 때 react-markdown이 예쁜 글씨로 변환해줌.
+> 긴 내용을 스크롤 없이 보려면 탭 UI가 효과적 — 하나의 카드에 여러 내용을 담아 전환해서 봄.
+
+---
+
+### 9. write-post 연동 → 자동 저장 스크립트
+
+```
+이것이 자동으로 오늘의 일지에 세 가지 형태로 날짜별로 자동으로 등록되게는 어떻게 해야해?
+```
+
+**Claude Code 작업:**
+- `scripts/import-devlog.ts` 생성 — DEVLOG.md와 AI_CASE_STUDY.md를 읽어 Supabase에 저장
+  - DEVLOG.md 오늘 날짜 섹션 → `my_view`
+  - AI_CASE_STUDY.md 전체 → `sns_view`
+  - 기술 스택 + 결과물 자동 추출 → `expert_view`
+  - `EXPERT_VIEW.md` 있으면 우선 사용 (vibelog-post 스킬이 직접 작성한 요약)
+- `package.json`에 `"import": "tsx scripts/import-devlog.ts"` 스크립트 추가
+
+**사용 방법:**
+```
+npm run import
+```
+
+**🤔 이 과정에서 배운 것:**
+> 스크립트란 반복 작업을 한 줄 명령어로 자동화한 것. npm run import 하나로 파일 읽기 → 데이터 변환 → DB 저장이 한 번에 됨.
+
+---
+
+### 10. vibelog-post 커스텀 스킬 제작
+
+```
+내 상황에 맞는 것을 따로 만들어서 사용하는 게 더 좋을 것 같아요.
+7주가 지나서도 계속할 거잖아. 쌓이면 쌓일수록 나는 점점 고도화되는 거잖아.
+```
+
+**Claude Code 작업:**
+- `.claude/skills/vibelog-post/SKILL.md` 생성
+  - Phase 1: 세션 스캔 → DEVLOG 작성
+  - Phase 2: 과거 Vibelog entries 읽어 성장 수준 파악 (입문/초급/중급/고급)
+  - Phase 3: 3가지 관점 생성 (수준에 맞게 자동 조정)
+  - Phase 4: Vibelog에 저장
+- `C:\Users\kanda\.claude\skills\vibelog-post\` 에 전역 복사 → 어디서든 `/vibelog-post` 사용 가능
+
+**🤔 이 과정에서 배운 것:**
+> 스킬이란 Claude Code에게 "이런 상황에서 이렇게 행동해"를 가르치는 파일. 내 상황(신랑이 시니어 개발자, 스폰지클럽 활동 중)을 기억하고, 기록이 쌓일수록 더 깊은 제안을 해줌.
+
+---
+
+### 11. Git 연결 및 자동 배포 설정
+
+```
+Git과 연결하고, 이게 자동으로 배포될 수 있도록 해줘.
+```
+
+**Claude Code 작업:**
+- `git init` → 기존 GitHub remote(`kandara-ai/vibelog`) 확인
+- `git add . && git commit` → 오늘 변경사항 저장
+- `git push origin main` → GitHub에 업로드
+
+**결과:** 코드 push → Vercel이 자동 감지 → 웹사이트 자동 재배포
+
+**🤔 이 과정에서 배운 것:**
+> Git = 변경 기록 관리 도구. 로컬(내 컴퓨터)에서 저장한다고 웹사이트가 바뀌는 게 아니라, GitHub에 push해야 Vercel이 감지하고 자동으로 새로 배포해줌.
+
+---
+
 ## 기술 스택
 
-- **Frontend**: Next.js 15 (App Router), Tailwind CSS, shadcn/ui
+- **Frontend**: Next.js 15 (App Router), Tailwind CSS, shadcn/ui, react-markdown
 - **Database**: Supabase (PostgreSQL)
 - **Language**: TypeScript
-- **Deployment**: Vercel (예정)
+- **Deployment**: Vercel (GitHub 연동 자동 배포)
 
 ---
 
 ## 오늘 만든 것
 
-1. **os-blueprint.md** — 나의 OS 청사진 (인터뷰로 발견한 나의 상황·통점·이상향)
+1. **os-blueprint.md** — 나의 OS 청사진
 2. **vibelog.prd.md** — 앱 기획서
-3. **Vibelog 웹앱 MVP** — localhost:3000에서 실제 동작 확인
-   - 일지 작성 → Supabase에 저장 → 목록에서 확인
+3. **Vibelog 웹앱** — https://vibelog-eta.vercel.app (실제 배포 완료)
+   - 3가지 관점 탭 UI (나의 관점 / 전문가 요약 / SNS)
+   - 마크다운 렌더링, SNS 복사 버튼, 스폰지클럽 업로드 가이드
+   - Supabase 연동 일지 저장
+4. **scripts/import-devlog.ts** — write-post → Vibelog 자동 저장 스크립트
+5. **.claude/skills/vibelog-post/SKILL.md** — 나에게 맞는 커스텀 기록 스킬
 
 ---
 
 ## 앞으로 할 것
 
-- [ ] GitHub repository 생성 및 코드 업로드
-- [ ] Vercel 배포 (인터넷 주소 생성)
-- [ ] 2주차: 개념 카드 + 진도 캘린더 추가
-- [ ] 3주차: SNS 변환 + 신랑용 데일리 요약 추가
+- [x] GitHub repository 생성 및 코드 업로드
+- [x] Vercel 배포 완료
+- [ ] 개념 노트 페이지 다듬기
+- [ ] 홈 화면 UI 개선
+- [ ] 2주차: 진도 캘린더 추가
