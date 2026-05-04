@@ -17,9 +17,14 @@ export default async function Home() {
           <h1 className="text-3xl font-bold">📚 Vibelog</h1>
           <p className="text-gray-500 mt-1">오늘 배운 것을 기록해요</p>
         </div>
-        <Link href="/new">
-          <Button>+ 오늘 일지 쓰기</Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/concepts">
+            <Button variant="outline">💡 개념 노트</Button>
+          </Link>
+          <Link href="/new">
+            <Button>+ 오늘 일지 쓰기</Button>
+          </Link>
+        </div>
       </div>
 
       {entries && entries.length === 0 && (
