@@ -4,6 +4,149 @@ AI 코딩 도구(Claude Code)와 함께 진행한 첫 번째 바이브 코딩 �
 
 ---
 
+## 2026-05-08
+
+### 1. gwscli 설치 및 Gmail 자동분류 설정
+
+```
+gwscli 설치부터 Gmail 자동분류 설정까지 오늘 경험한 내용 정리
+```
+
+**오늘 한 것:**
+- gwscli(Google Workspace CLI) npm으로 설치
+- Google Cloud Console에서 OAuth 출입증 발급 (처음 해봄)
+- Gmail API, Drive API, Sheets API 활성화
+- kandara866@gmail.com 계정 인증 완료
+- Gmail 최근 50개 메일 읽고 패턴 분석
+- 분류 기준 5가지 결정 → 라벨 8개 생성
+- 기존 메일 45개에 라벨 적용 완료
+- 자동 필터 생성 시도 → 스코프 권한 문제로 미완 (Gmail 자체 필터로 대체 가능)
+
+---
+
+### 2. 오늘 처음 알게 된 것들
+
+**gwscli가 뭔지 — 설치 전에 몰랐던 것**
+
+처음엔 이름만 보고 Google 관련 도구라는 것만 알았어요. 써보니까 이런 거예요.
+
+> gwscli는 Gmail·Drive·Sheets 같은 Google 서비스를 터미널 명령어로 다루는 도구예요.
+> 보통 브라우저에서 마우스로 하는 일을 코드 한 줄로 할 수 있어요.
+
+**OAuth 출입증이 뭔지**
+
+gwscli가 내 Gmail에 접근하려면 Google한테 허가를 받아야 해요. 그 허가증을 만드는 곳이 Google Cloud Console이에요. 오늘 처음으로 직접 만들었어요. 한 번 만들면 재사용돼요.
+
+**API 활성화가 뭔지**
+
+허가증을 만든 다음에, "이 도구가 Gmail에 접근해도 돼", "Drive에 접근해도 돼"를 Google Cloud 프로젝트에서 하나씩 켜줘야 해요. 기본은 다 꺼져있어요. 스위치 켜듯이 활성화하는 거예요.
+
+**인증이 뭔지**
+
+허가증 만들고 API 켜고 나서, 실제로 내 Google 계정으로 로그인해서 "이 도구가 내 Gmail을 쓰는 걸 허용한다"고 승인하는 단계예요. 브라우저에서 Google 계정 선택하고 허용 누른 그거예요.
+
+> 출입증 만들기(OAuth) → 문 열기(API 활성화) → 열쇠로 들어가기(인증) 순서.
+
+---
+
+### 3. gwscli로 할 수 있는 것들 (전체 범위)
+
+**Gmail**
+- 메일 읽기·보내기·답장·전달
+- 라벨 만들기·붙이기
+- 필터 생성 (자동 분류 규칙)
+- 받은 편지함 요약
+- 새 메일 실시간 감시
+
+**Google Drive**
+- 파일 목록 조회·업로드·다운로드
+- 공유 설정 변경
+
+**Google Sheets**
+- 셀 읽기, 행 추가, 새 시트 생성
+- 데이터 자동 기록
+
+**Google Calendar**
+- 오늘 일정 보기, 이벤트 추가
+
+**Workflow 자동화 (진짜 강점)**
+- `+standup-report`: 오늘 회의 + 미완료 작업 자동 정리
+- `+meeting-prep`: 회의 전 의제·참석자·관련 파일 준비
+- `+email-to-task`: 중요 메일을 할 일 목록으로 변환
+- `+weekly-digest`: 한 주 요약 자동 생성
+
+**Claude Code와 연결하면**
+```
+매일 오전 → Gmail 미읽음 요약
+→ 뉴스레터 제목 Sheets에 기록
+→ 중요 메일만 별도 라벨
+→ 요약을 Notion에 저장
+```
+반복 작업을 자동화하는 흐름을 만들 수 있어요.
+
+---
+
+### 4. 오늘 만든 Gmail 라벨 구조
+
+| 라벨 | 대상 발신처 |
+|---|---|
+| 🔴 즉시확인 | Google 보안·인증, Adobe 결제 |
+| 📰 뉴스레터/뉴스·시사 | NEWNEEK |
+| 📰 뉴스레터/비즈니스 | 뷰트랩, 폴인, 플렉스웍 |
+| 📰 뉴스레터/AI·기술 | 지피터스 |
+| 📰 뉴스레터/영어콘텐츠 | Medium, DBpia |
+| 🤖 AI·기술업데이트 | GitHub, Vercel, Notion |
+| 📢 프로모션 | 세시간전, Dribbble, AirAsia 등 |
+| 👤 소셜 | LinkedIn, MutualArt |
+
+---
+
+### 5. 이 영상 보고 시작했어요
+
+**참고 유튜브**: [gwscli 설치부터 실전 활용까지](https://www.youtube.com/watch?v=S99_UhOQjNw)
+
+1인 기업가가 세 개 사업을 혼자 운영하면서 매일 아침 탭 15개씩 열던 루틴을 gwscli로 바꾼 이야기예요.
+
+**영상에서 인상 깊었던 것들:**
+
+> "진짜 문제는 시간이 아니었어요. 잡무에 하루를 갈아넣고 있었던 거죠."
+
+gwscli를 "만능 USB 포트"에 비유했어요. Gmail, Drive, Calendar, Sheets, Docs, Slides — 따로따로 연결하던 걸 하나만 설치하면 전부 다 된다는 거예요.
+
+**영상에서 실제로 한 것들:**
+- 30일치 249개 이메일 중요도 점수 매기기 → 낮은 중요도 105개 읽음 처리
+- 뉴스레터 189개 내용 요약 → Google Docs에 자동 정리
+- 유튜브 영상 링크 던지면 → 가이드 문서로 Google Docs에 자동 작성
+- 브랜드 로고·가이드라인 넣으면 → Google Slides 자동 생성
+- 슬라이드 스크린샷 찍어서 레이아웃 오류 자동 보정
+
+**이 사람이 실제로 쓰는 방식:**
+- 이메일 중요도 요약 → 직접 볼 것만 처리
+- 뉴스레터 → Google Docs에 모아서 일주일에 한 번 리뷰
+- 반죽 유통 사업 마감 시간 → 캘린더 자동 알람
+- 무료 컨설팅 신청 메일 → 하루치 자동 수집, 놓치지 않기
+- 유튜브 콘텐츠 → 슬라이드 자동 생성
+
+**영상에서 말한 gwscli 4가지 강점:**
+1. **자동 업데이트**: Google API 목록 실시간으로 읽어서 명령어 자동 생성
+2. **MCP 서버 내장**: Claude Code와 연결하는 복잡한 설정 불필요
+3. **100개 이상 스킬**: 이메일·드라이브·독스·캘린더 워크플로우 포함
+4. **보안 (Model Armor)**: AI가 받는 응답을 자동 검사해서 위험 차단
+
+---
+
+### 6. 막힌 것 & 배운 것
+
+**막힌 것**: Gmail 자동 필터(새 메일 올 때마다 자동 분류) 생성이 API 권한 문제로 실패.
+
+**배운 것**: gwscli로 안 되는 건 Gmail 자체 기능으로 대체할 수 있어요. Gmail → 설정 → 필터 및 차단된 주소에서 직접 만들면 돼요.
+
+**느낀 것**: 설치는 쉬웠는데 Google Cloud Console 설정이 생각보다 많은 단계였어요. OAuth, API 활성화, 스코프, 인증 — 다 처음 들어보는 개념이었는데 하나씩 하다 보니 연결이 됐어요.
+
+영상에서 "자동화는 도구가 먼저가 아니라 내 브랜드와 시스템을 어떻게 설계하고 그중 반복 작업을 AI한테 맡길까, 이 위임의 문제다"라고 했는데 — gwscli를 직접 써보니까 그 말이 더 와 닿았어요.
+
+---
+
 ## 2026-05-04 (Day 1)
 
 ### 1. OS Interview Skill로 앱 기획하기
@@ -300,3 +443,203 @@ Git과 연결하고, 이게 자동으로 배포될 수 있도록 해줘.
 - [ ] 개념 노트 페이지 다듬기
 - [ ] 홈 화면 UI 개선
 - [ ] 2주차: 진도 캘린더 추가
+
+---
+
+## 2026-05-05 (Day 2) — AI 마켓 프로젝트
+
+vibelog가 아닌 **AI 마켓**(소상공인 홈페이지 제작 서비스) 프로젝트 작업.
+흩어진 자료 통합 정리부터 자사 홈페이지 디자인 업그레이드, GitHub 분리까지.
+
+---
+
+### 1. AI 마켓 프로젝트 통합 정리
+
+```
+이곳에서 소상공인들을 위한 웹페이지 만드는 것을 하나의 프로젝트 파일 안에 넣어 줄 수 있을까?
+프로젝트 파일 안에 AI 마켓이라는 이름으로 정리해줘.
+나는 프로젝트 내부에 있는 파일 외에는, 예전에 클로드 코드가 익숙하지 않았을 때 구성된 것들이라
+그 안에 어떤 폴더들이 있는지 잘 몰라.
+```
+
+**문제 상황:** D:\kyra-test 안에 AI 마켓 관련 자료가 여러 곳(01_web_automation_core, 02_business_docs, AI-MARKET, .claude, .codex 등)에 흩어져 있고, 어디에 무엇이 있는지 잘 모르는 상태.
+
+**Claude Code 작업:**
+- Explore 에이전트 2개를 병렬로 D:\kyra-test 내부와 외부(Downloads, Documents) 동시 조사
+- 새 폴더 `D:\AI-MARKET` 만들고 robocopy로 단계별 통합 (200+ files)
+- 외부 자료(Downloads, Documents)는 옮기지 않고 `EXTERNAL-REFERENCES.md` 인덱스로만 정리
+- 단계별 진행 (사전 점검 → 골격 생성 → 앱 이동 → docs 재분류 → business 통합 → automation 정리)
+
+**🤔 이 과정에서 배운 것:**
+> 흩어진 자료를 통합할 때는 "복사 → 검증 → 원본 삭제" 순서가 안전. 한 번에 옮기면 위험.
+
+---
+
+### 2. 자사 / 제작서비스 영역 분리
+
+```
+여기서 에이아이 마켓의 자사 홈페이지만드는 것과 
+실제 진행하는 서비스 소상공인들의 웹페이지를 만드는 것을 구분지어서 확인할수 있었음 좋겠는데
+```
+
+**Claude Code 작업:**
+- D:\AI-MARKET 안을 두 개의 상위 폴더로 재편성:
+  - 🏢 `01_자사\` — AI 마켓 회사 본체 (자사 홈페이지·사업계획서·발표자료)
+  - 🛠️ `02_제작서비스\` — 소상공인 고객 홈페이지 제작 사업 (자동화·리서치·기획)
+- README.md, CLAUDE.md, ROADMAP.md 작성 — 프로젝트 정체성·규칙·향후 로드맵
+- Claude Code 메모리 파일 경로도 새 위치로 갱신
+
+**🤔 이 과정에서 배운 것:**
+> "두 종류의 일이 한 폴더에 섞이면 헷갈린다." 폴더 단위로 나누면 매번 어디서 작업하는지 명확해짐.
+
+---
+
+### 3. 자사 홈페이지 디자인 업그레이드
+
+```
+1차 자사 홈페이지를 먼저 수정을 해보자. 
+디자인이 좀더 세련되었음 좋겠는데...
+마음에 든다는건 문구 cta등을 이야기 하는거야
+```
+
+**문제:** 현재 자사 홈페이지(Next.js 15)의 디자인이 평범함. 텍스트(카피·CTA)는 마음에 들지만 디자인 디테일이 약함. `page.tsx`가 816줄 단일 파일로 모든 섹션이 한 파일에.
+
+**Claude Code 작업:**
+- `frontend-design` 스킬 호출 — "Generic AI 미감 회피"가 명시된 스킬
+- 디자인 방향: **"Editorial Architectural"** (Swiss 디자인 + 일본 미니멀 출판 + 종이 텍스처)
+- `page.tsx` 816줄 → 60줄 (15개 컴포넌트로 분리):
+  - `components/sections/` — Hero, PainPoints, Why, Process, Price, FreeResource, FAQ 등 11개
+  - `components/ui/` — Reveal (모션), SectionLabel
+  - `lib/payment.ts` — Toss 결제 로직 분리
+- `globals.css`에 디자인 토큰·종이 텍스처·키프레임 확장
+- **텍스트 콘텐츠는 한 글자도 변경 안 함** (사용자 요청)
+- 빌드 검증: 5.6초 컴파일, 7개 페이지 정상
+
+**🤔 이 과정에서 배운 것:**
+> AI에게 디자인을 일임할 때 "유지할 것"을 명확히 정해주면 (텍스트·색 팔레트) 신뢰감 있는 결과가 나옴.
+> 큰 단일 파일을 컴포넌트로 분리하면 부분 수정이 가능해짐.
+
+---
+
+### 4. GitHub 분리 작업
+
+```
+우리 AI 마켓의 자사 홈페이지와 외부 작업하는 것을 깃허브(GitHub)로 나누어야 할 것 같은데
+아예 저장소를 따로 만들까?
+```
+
+**Claude Code 작업:**
+- 자사 홈페이지(이미 있는 `kandara-ai/AI-MARKET` 레포)는 그대로 사용
+- 디자인 업그레이드는 `redesign-2026-05` **새 브랜치**로 push (main 안전 보존)
+  - Vercel이 자동으로 preview URL 생성 → 본 사이트 영향 없이 새 디자인 확인 가능
+- 02_제작서비스용 새 레포(`aimarket-service`) git init + commit
+  - 178MB benchmarks/ 폴더는 .gitignore 처리 (9.47MB만 staged)
+  - 환경변수·비밀 파일 .gitignore로 사전 차단
+
+**🤔 이 과정에서 배운 것:**
+> "한 번 push하면 GitHub에 영구 기록 남음." .gitignore로 비밀 파일·큰 파일 사전 차단 필수.
+> 새 디자인은 main이 아니라 별도 브랜치로 → Vercel preview URL로 안전하게 확인.
+
+---
+
+### 5. Claude Design 출시 발견
+
+```
+혹시 클로드 디자인과 합쳐서 고칠수 있는 방법은 없을까?
+클로디자인이 출시 되었자나?
+```
+
+**Claude Code 작업:**
+- WebSearch로 확인: Anthropic이 **2026-04-17 Claude Design 출시**
+- 대화로 디자인·프로토타입·슬라이드 만드는 AI 도구 (Figma·Canva 경쟁작)
+- Pro/Max/Team/Enterprise 플랜 research preview
+- 향후 워크플로우: Claude Design에서 시안 변주 → Claude Code가 코드 적용
+
+---
+
+## 기술 스택
+
+- **Framework**: Next.js 15, React 19, TypeScript
+- **Style**: Tailwind CSS 4, Framer Motion (motion), tw-animate-css
+- **Fonts**: Inter, Anton, Pretendard
+- **Backend**: Supabase, Toss Payments, Google GenAI
+- **Deploy**: Vercel
+- **Tools**: frontend-design 스킬, Claude Design (예정), git/GitHub
+- **OS**: Windows 11 + Git Bash + PowerShell
+
+## 오늘 만든 것
+
+1. **`D:\AI-MARKET` 통합 폴더** — 흩어진 자료 200+ files 한곳에 정리
+2. **자사/제작서비스 영역 분리** — 폴더 단위로 시각적 구분
+3. **자사 홈페이지 디자인 리프레시** — editorial-architectural 톤, 15개 컴포넌트로 분리, 빌드 통과
+4. **GitHub 2개 레포 정리** — kandara-ai/AI-MARKET (`redesign-2026-05` 브랜치 push), aimarket-service (commit 완료, push 대기)
+5. **README · CLAUDE.md · ROADMAP.md** — 프로젝트 지침과 단기·중기·장기 로드맵
+
+---
+
+## 앞으로 할 것
+
+- [ ] aimarket-service GitHub 빈 레포 만들고 push
+- [ ] Vercel preview URL로 새 디자인 확인 → 마음에 들면 main에 merge
+- [ ] Claude Design 직접 사용해보기 (시안 변주)
+- [ ] D:\kyra-test의 옛 원본 폴더 정리 (안전망 역할 끝나면)
+- [ ] AI-MARKET-map-update (옛 git worktree)를 archive로 이동
+- [ ] 자사 홈페이지 카카오 링크 5곳 → "준비 중" 토스트로 교체
+
+---
+
+## 2026-05-06 (Day 3) — 스폰지타임즈 워크스페이스 + 캐러셀 두 편
+
+### 1. 스폰지타임즈 첫 회의 내용 정리
+
+```
+회의 시작 했고, 클로드 구글 다른 계정으로 ai.mkt.heaja@gmail.com
+회의 요약 및 녹취록 [Notion 영문 요약]
+```
+
+**Claude Code 작업:**
+- 노션 AI 회의 요약(영문) → 한국어 번역
+- 핵심 결정사항 5가지 정제 (인스타 co-author 발행 / Slack-Claude 자동화 / 개별→통합 워크플로우 / MVP 시스템 / 일요일 사이클)
+- 회의록 정제본: `meetings/2026-05-06-kickoff.md`
+
+---
+
+### 2. 1주차 작업 현황 정리
+
+```
+사람들이 이것으로 스킬을 사용하고 있어
+내가 여기에 복붙한 것들을 1차 정리
+```
+
+**Claude Code 작업:**
+- 슬랙 #스킬공유 17개 항목 → 7개 카테고리 분류
+- 슬로우 퀵 활용 우선순위 매트릭스
+- `references/slack/2026-05-06-skill-shares-batch01.md`
+
+---
+
+### 3. 0주차 캐러셀 제작 — "스폰지클럽 1기가 시작됐습니다"
+
+```
+Sponge Club 첫 회 오리엔테이션이었는데, 이것을 가지고 콘텐츠를 만들 거야
+이것을 캐러셀로 만들어 보자
+```
+
+**Claude Code 작업:**
+- 0504 오리엔테이션 트랜스크립트 핵심 추출 (모토·5개 유닛·뉴스룸 정의·7주 흐름)
+- 8장 슬라이드 카피 + 인스타 캡션
+- `content/instagram/2026-W19-week00-spongeclub-intro.md`
+
+---
+
+### 4. 1주차 캐러셀 제작 — "1주차에 스폰지가 본 것들"
+
+```
+정리된 내용을 가지고 캐러셀을 만들려고 하는데
+17가지를 다 하지말고 정리를 해줘
+```
+
+**Claude Code 작업:**
+- 17개 → 5개 큐레이션 (CC101 / CLAUDE.md / Viral Hook / Marketing Skills / Notion Meeting Intelligence)
+- 8장 슬라이드 카피 + 인스타 캡션 + 매핑 검증
+- `content/instagram/2026-W19-week01-selfish-skillers.md`
