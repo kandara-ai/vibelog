@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 type Entry = {
   id: number
   date: string
+  category: string | null
   my_view: string | null
   sns_view: string | null
   expert_view: string | null
