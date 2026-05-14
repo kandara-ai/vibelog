@@ -1,10 +1,14 @@
-gwscli(Google Workspace CLI) 설치 및 Gmail 연동 첫 경험.
-npm 한 줄 설치 → Google Cloud Console OAuth 설정(처음) →
-Gmail/Drive/Sheets API 활성화 → 계정 인증 순서로 완료.
-Gmail 50개 메일 분석 후 8개 라벨 생성, 45개 분류 적용.
-자동 필터는 스코프 권한 이슈로 미완 — Gmail 내장 필터로 대체 가능.
+Next.js 15 자사 홈페이지 포지셔닝 전면 리뉴얼. 5개 컴포넌트·2개 페이지 수정,
+소개 페이지 팀 섹션 신규 추가.
 
-사용 도구: gwscli 0.22.5, Node.js v24
+핵심: "AI 툴은 제작 문제를 해결했고, AI MARKET은 작동 문제를 해결한다"는
+메시지를 Hero·서비스·소개 페이지 전체에 일관되게 반영.
+
+**사용 도구:** Next.js 15 App Router, Tailwind CSS 4, Framer Motion, Vercel
+**배포:** https://ai-market-virid.vercel.app
+
+**사용 도구:** Next.js 15 App Router, TypeScript, Tailwind CSS 4, Vercel
+**배포:** https://ai-market-virid.vercel.app
 
 ---
 
