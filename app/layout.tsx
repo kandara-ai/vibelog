@@ -14,6 +14,7 @@ const NAV = [
   { href: "/category/개념정리", label: "개념정리" },
   { href: "/category/일지", label: "일지" },
   { href: "/notes", label: "말하기" },
+  { href: "/schedule", label: "약속" },
 ];
 
 const B_BG = '#0b0907';
