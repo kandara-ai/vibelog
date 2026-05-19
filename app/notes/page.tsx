@@ -18,9 +18,12 @@ const B = {
 }
 
 const CAT: Record<string, { fg: string; bg: string }> = {
-  '일상': { fg: B.tan, bg: B.tanGlow },
-  '공부': { fg: B.sage, bg: B.sageGlow },
-  'AI학습': { fg: B.plum, bg: B.plumGlow },
+  '일상':    { fg: B.tan,  bg: B.tanGlow },
+  '공부':    { fg: B.sage, bg: B.sageGlow },
+  'AI학습':  { fg: B.plum, bg: B.plumGlow },
+  '홈페이지': { fg: '#78b8e0', bg: 'rgba(120, 184, 224, 0.20)' },
+  '테라셀':   { fg: '#e08888', bg: 'rgba(224, 136, 136, 0.20)' },
+  '스폰지클럽': { fg: '#e8c068', bg: 'rgba(232, 192, 104, 0.20)' },
 }
 
 function getCat(cat: string) {
