@@ -16,6 +16,7 @@ const NAV = [
   { href: "/category/사업", label: "사업" },
   { href: "/category/개념정리", label: "개념정리" },
   { href: "/category/일지", label: "일지" },
+  { href: "/notes", label: "말하기" },
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
