@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
-
-const geist = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "slowquick",
@@ -19,30 +16,68 @@ const NAV = [
   { href: "/notes", label: "말하기" },
 ];
 
+const B_BG = '#0b0907';
+const B_SURFACE = '#1a1612';
+const B_INK = '#fbf4e1';
+const B_INK_DIM = '#b9a988';
+const B_LINE = 'rgba(251, 244, 225, 0.14)';
+const B_TAN = '#f0b878';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" className={`${geist.variable} h-full antialiased`}>
-      <body className="min-h-full text-gray-900" style={{ background: '#FFF9F4' }}>
-        <header className="sticky top-0 z-10 border-b" style={{ background: '#FFF9F4', borderColor: '#EDE0D4' }}>
-          <div className="max-w-2xl mx-auto px-6 py-4 flex items-center justify-between">
-            <Link href="/" className="text-base font-medium tracking-tight" style={{ color: '#2D2520' }}>slowquick</Link>
-            <nav className="flex gap-1">
+    <html lang="ko">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+          rel="stylesheet"
+        />
+        <style>{`
+          body { background: ${B_BG}; color: ${B_INK}; font-family: 'IBM Plex Sans KR', system-ui, sans-serif; margin: 0; }
+          .nav-link { color: ${B_INK_DIM}; text-decoration: none; font-size: 12px; padding: 5px 12px; border-radius: 4px; transition: color 0.15s, background 0.15s; }
+          .nav-link:hover { color: ${B_INK}; background: rgba(251, 244, 225, 0.06); }
+        `}</style>
+      </head>
+      <body>
+        <header style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 10,
+          background: B_SURFACE,
+          borderBottom: `1px solid ${B_LINE}`,
+        }}>
+          <div style={{
+            maxWidth: '860px',
+            margin: '0 auto',
+            padding: '0 24px',
+            height: '52px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+            <Link href="/" style={{
+              fontFamily: "'Gowun Batang', Georgia, serif",
+              fontSize: '18px',
+              fontWeight: 400,
+              letterSpacing: '-0.5px',
+              color: B_INK,
+              textDecoration: 'none',
+            }}>
+              slow<span style={{ color: B_TAN }}>quick</span>
+            </Link>
+            <nav style={{ display: 'flex', gap: '2px' }}>
               {NAV.map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="text-sm px-3 py-1.5 rounded-full transition-colors"
-                  style={{ color: '#A0887A' }}
-                  onMouseOver={e => (e.currentTarget.style.background = '#F5EAE0')}
-                  onMouseOut={e => (e.currentTarget.style.background = 'transparent')}
-                >
+                <Link key={href} href={href} className="nav-link">
                   {label}
                 </Link>
               ))}
             </nav>
           </div>
         </header>
-        <main className="max-w-2xl mx-auto px-6 py-10">{children}</main>
+        <main style={{ maxWidth: '860px', margin: '0 auto', padding: '40px 24px' }}>
+          {children}
+        </main>
       </body>
     </html>
   );

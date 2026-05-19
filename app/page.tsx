@@ -4,6 +4,19 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { getCategoryStyle, getPreview } from '@/lib/category'
 
+const B = {
+  surface: '#1a1612',
+  ink: '#fbf4e1',
+  inkDim: '#b9a988',
+  inkFaint: '#7a6e55',
+  line: 'rgba(251, 244, 225, 0.14)',
+  tan: '#f0b878',
+}
+
+const mono = "'IBM Plex Mono', ui-monospace, monospace"
+const sans = "'IBM Plex Sans KR', system-ui, sans-serif"
+const serif = "'Gowun Batang', Georgia, serif"
+
 export default async function Home() {
   const { data: entries } = await supabase
     .from('entries')
@@ -12,36 +25,89 @@ export default async function Home() {
 
   return (
     <div>
-      {/* Hero */}
-      <div className="mb-12">
-        <h1 className="text-4xl font-bold tracking-tight mb-3">slowquick</h1>
-        <p className="text-gray-500 text-lg">바이브코딩하고, 사업하고, 배우고, 기록합니다.</p>
+      <div style={{ marginBottom: '48px' }}>
+        <div style={{
+          fontFamily: mono,
+          fontSize: '10px',
+          letterSpacing: '2px',
+          textTransform: 'uppercase',
+          color: B.tan,
+          marginBottom: '10px',
+        }}>slowquick · 기록</div>
+        <h1 style={{
+          fontFamily: serif,
+          fontSize: '32px',
+          fontWeight: 400,
+          color: B.ink,
+          margin: '0 0 8px',
+          letterSpacing: '-0.5px',
+        }}>바이브코딩하고, 사업하고,<br />배우고, 기록합니다.</h1>
+        <p style={{ fontSize: '14px', color: B.inkFaint, margin: 0, fontFamily: sans }}>
+          경력단절 후 다시 시작하는 slowquick의 기록장
+        </p>
       </div>
 
-      {/* Grid */}
       {!entries?.length ? (
-        <p className="text-gray-400 text-center py-20">아직 기록이 없어요.</p>
+        <p style={{ fontSize: '14px', color: B.inkFaint, textAlign: 'center', padding: '60px 0' }}>
+          아직 기록이 없어요.
+        </p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '12px' }}>
           {entries.map((entry) => {
             const style = getCategoryStyle(entry.category)
             const preview = getPreview(entry.my_view)
             return (
-              <Link key={entry.id} href={`/entry/${entry.id}`}>
-                <div className="bg-white border rounded-xl p-5 h-full hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col gap-3">
-                  {/* Category badge */}
+              <Link key={entry.id} href={`/entry/${entry.id}`} style={{ textDecoration: 'none' }}>
+                <div style={{
+                  background: B.surface,
+                  border: `1px solid ${B.line}`,
+                  borderRadius: '4px',
+                  padding: '18px 20px',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                  transition: 'border-color 0.15s',
+                  boxSizing: 'border-box',
+                }}>
                   {entry.category && (
-                    <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full w-fit ${style.bg} ${style.text}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      fontSize: '10px',
+                      fontFamily: mono,
+                      fontWeight: 500,
+                      letterSpacing: '0.3px',
+                      padding: '2px 8px',
+                      borderRadius: '2px',
+                      width: 'fit-content',
+                      background: style.bg,
+                      color: style.fg,
+                    }}>
                       {entry.category}
                     </span>
                   )}
-                  {/* Preview */}
-                  <p className="text-sm text-gray-700 leading-relaxed flex-1 line-clamp-4">
+                  <p style={{
+                    fontSize: '13px',
+                    color: B.ink,
+                    lineHeight: 1.65,
+                    flex: 1,
+                    margin: 0,
+                    fontFamily: sans,
+                    fontWeight: 300,
+                    display: '-webkit-box',
+                    WebkitLineClamp: 4,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                  }}>
                     {preview || '내용 없음'}
                   </p>
-                  {/* Date */}
-                  <p className="text-xs text-gray-400">{entry.date}</p>
+                  <p style={{
+                    fontSize: '11px',
+                    color: B.inkFaint,
+                    margin: 0,
+                    fontFamily: mono,
+                  }}>{entry.date}</p>
                 </div>
               </Link>
             )

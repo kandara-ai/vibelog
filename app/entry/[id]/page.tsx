@@ -3,6 +3,18 @@ import { supabase } from '@/lib/supabase'
 import { EntryTabs } from '@/components/entry-tabs'
 import { getCategoryStyle } from '@/lib/category'
 
+const B = {
+  surface: '#1a1612',
+  ink: '#fbf4e1',
+  inkDim: '#b9a988',
+  inkFaint: '#7a6e55',
+  line: 'rgba(251, 244, 225, 0.14)',
+  tan: '#f0b878',
+}
+
+const mono = "'IBM Plex Mono', ui-monospace, monospace"
+const sans = "'IBM Plex Sans KR', system-ui, sans-serif"
+
 export default async function EntryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const { data: entry } = await supabase
@@ -13,9 +25,9 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
 
   if (!entry) {
     return (
-      <div className="max-w-2xl mx-auto py-10">
-        <p className="text-gray-400">일지를 찾을 수 없어요.</p>
-        <Link href="/" className="text-sm text-indigo-600 hover:underline mt-4 inline-block">← 홈으로</Link>
+      <div style={{ padding: '40px 0' }}>
+        <p style={{ color: B.inkFaint, fontFamily: sans }}>일지를 찾을 수 없어요.</p>
+        <Link href="/" style={{ fontSize: '13px', color: B.tan, textDecoration: 'none', marginTop: '16px', display: 'inline-block', fontFamily: mono }}>← 홈으로</Link>
       </div>
     )
   }
@@ -24,21 +36,36 @@ export default async function EntryPage({ params }: { params: Promise<{ id: stri
   const backHref = entry.category ? `/category/${encodeURIComponent(entry.category)}` : '/'
 
   return (
-    <div className="max-w-2xl mx-auto py-10">
-      <div className="mb-8">
-        <Link href={backHref} className="text-sm text-gray-400 hover:text-gray-600">← 목록으로</Link>
-        <div className="mt-4 flex items-center gap-3">
+    <div>
+      <div style={{ marginBottom: '32px' }}>
+        <Link href={backHref} style={{ fontSize: '13px', color: B.inkDim, textDecoration: 'none', fontFamily: mono }}>← 목록으로</Link>
+        <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
           {entry.category && (
-            <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${style.bg} ${style.text}`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              fontSize: '10px',
+              fontFamily: mono,
+              fontWeight: 500,
+              letterSpacing: '0.3px',
+              padding: '2px 8px',
+              borderRadius: '2px',
+              background: style.bg,
+              color: style.fg,
+            }}>
               {entry.category}
             </span>
           )}
-          <span className="text-sm text-gray-400">{entry.date}</span>
+          <span style={{ fontSize: '12px', color: B.inkFaint, fontFamily: mono }}>{entry.date}</span>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border p-6">
+      <div style={{
+        background: B.surface,
+        border: `1px solid ${B.line}`,
+        borderRadius: '4px',
+        padding: '28px 32px',
+      }}>
         <EntryTabs entry={entry} />
       </div>
     </div>

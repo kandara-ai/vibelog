@@ -2,15 +2,34 @@ export const dynamic = 'force-dynamic'
 
 import { supabase } from '@/lib/supabase'
 
-const STYLE: Record<string, { bg: string; text: string }> = {
-  '일상': { bg: '#E8F4F8', text: '#4A8FA8' },
-  '공부': { bg: '#EAF5EF', text: '#4A8F6A' },
-  'AI학습': { bg: '#F2EEF8', text: '#7A5FA8' },
+const B = {
+  surface: '#1a1612',
+  ink: '#fbf4e1',
+  inkDim: '#b9a988',
+  inkFaint: '#7a6e55',
+  line: 'rgba(251, 244, 225, 0.14)',
+  lineSoft: 'rgba(251, 244, 225, 0.06)',
+  tan: '#f0b878',
+  tanGlow: 'rgba(240, 184, 120, 0.22)',
+  sage: '#a8c485',
+  sageGlow: 'rgba(168, 196, 133, 0.20)',
+  plum: '#cba6e0',
+  plumGlow: 'rgba(203, 166, 224, 0.20)',
 }
 
-function getStyle(category: string) {
-  return STYLE[category] ?? { bg: '#F5F0EB', text: '#8A7A70' }
+const CAT: Record<string, { fg: string; bg: string }> = {
+  '일상': { fg: B.tan, bg: B.tanGlow },
+  '공부': { fg: B.sage, bg: B.sageGlow },
+  'AI학습': { fg: B.plum, bg: B.plumGlow },
 }
+
+function getCat(cat: string) {
+  return CAT[cat] ?? { fg: B.inkDim, bg: 'rgba(185, 169, 136, 0.15)' }
+}
+
+const mono = "'IBM Plex Mono', ui-monospace, monospace"
+const sans = "'IBM Plex Sans KR', system-ui, sans-serif"
+const serif = "'Gowun Batang', Georgia, serif"
 
 export default async function NotesPage() {
   const { data: notes } = await supabase
@@ -29,65 +48,96 @@ export default async function NotesPage() {
 
   return (
     <div>
-      <div style={{ marginBottom: '36px' }}>
-        <h1 style={{ fontSize: '18px', fontWeight: 500, color: '#2D2520', marginBottom: '4px' }}>말하기</h1>
-        <p style={{ fontSize: '13px', color: '#C0A898' }}>텔레그램에서 보낸 말들이 차곡차곡 쌓여요.</p>
+      <div style={{ marginBottom: '40px' }}>
+        <div style={{
+          fontFamily: mono,
+          fontSize: '10px',
+          letterSpacing: '2px',
+          textTransform: 'uppercase',
+          color: B.tan,
+          marginBottom: '8px',
+        }}>FEED · 말하기</div>
+        <div style={{
+          fontFamily: serif,
+          fontSize: '26px',
+          fontWeight: 400,
+          color: B.ink,
+          marginBottom: '6px',
+        }}>텔레그램에서 보낸 말들</div>
+        <p style={{ fontSize: '13px', color: B.inkFaint, margin: 0, fontFamily: sans }}>
+          일상, 공부, AI학습이 차곡차곡 쌓여요.
+        </p>
       </div>
 
       {!notes?.length ? (
-        <p style={{ fontSize: '14px', color: '#C0A898', textAlign: 'center', padding: '60px 0' }}>
+        <p style={{ fontSize: '14px', color: B.inkFaint, textAlign: 'center', padding: '60px 0', fontFamily: sans }}>
           아직 메모가 없어요. 텔레그램에서 말해보세요.
         </p>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
           {Object.entries(grouped).map(([day, dayNotes]) => (
             <div key={day}>
-              <div style={{ marginBottom: '10px' }}>
+              <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <span style={{
-                  display: 'inline-block',
-                  fontSize: '10px',
+                  fontFamily: mono,
+                  fontSize: '11px',
                   fontWeight: 600,
-                  letterSpacing: '0.06em',
+                  letterSpacing: '1.5px',
                   textTransform: 'uppercase',
-                  color: '#FFF8F4',
-                  background: '#C4957A',
-                  padding: '2px 10px',
-                  borderRadius: '2px',
-                }}>
-                  {day}
-                </span>
+                  color: B.tan,
+                  flexShrink: 0,
+                }}>{day}</span>
+                <div style={{ flex: 1, height: '1px', background: B.lineSoft }} />
+                <span style={{
+                  fontFamily: mono,
+                  fontSize: '10px',
+                  color: B.inkFaint,
+                  flexShrink: 0,
+                }}>{dayNotes?.length} notes</span>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                 {dayNotes?.map(note => {
-                  const style = getStyle(note.category)
+                  const cat = getCat(note.category)
                   return (
                     <div key={note.id} style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '10px',
-                      padding: '10px 12px',
-                      borderRadius: '5px',
-                      background: 'rgba(255,255,255,0.7)',
+                      display: 'grid',
+                      gridTemplateColumns: '52px 68px 1fr',
+                      gap: '12px',
+                      padding: '10px 16px',
+                      background: B.surface,
+                      border: `1px solid ${B.line}`,
+                      borderRadius: '3px',
+                      alignItems: 'baseline',
                     }}>
                       <span style={{
-                        flexShrink: 0,
-                        fontSize: '9px',
-                        fontWeight: 600,
-                        letterSpacing: '0.05em',
-                        padding: '2px 7px',
-                        borderRadius: '10px',
-                        marginTop: '2px',
-                        background: style.bg,
-                        color: style.text,
+                        fontFamily: mono,
+                        fontSize: '11px',
+                        color: B.inkFaint,
+                        fontVariantNumeric: 'tabular-nums',
                       }}>
-                        {note.category}
-                      </span>
-                      <p style={{ flex: 1, fontSize: '14px', color: '#3D3028', lineHeight: 1.6, fontWeight: 300 }}>
-                        {note.text}
-                      </p>
-                      <span style={{ flexShrink: 0, fontSize: '11px', color: '#C8B8AE', marginTop: '2px' }}>
                         {new Date(note.created_at).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
                       </span>
+                      <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        background: cat.bg,
+                        color: cat.fg,
+                        padding: '2px 7px',
+                        fontSize: '10px',
+                        fontFamily: mono,
+                        fontWeight: 500,
+                        letterSpacing: '0.3px',
+                        textTransform: 'uppercase',
+                        borderRadius: '2px',
+                      }}>{note.category}</span>
+                      <p style={{
+                        fontSize: '14px',
+                        color: B.ink,
+                        lineHeight: 1.65,
+                        fontWeight: 300,
+                        margin: 0,
+                        fontFamily: sans,
+                      }}>{note.text}</p>
                     </div>
                   )
                 })}
