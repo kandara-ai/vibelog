@@ -3,9 +3,50 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter, useParams, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
+const B = {
+  bg: '#0b0907',
+  surface: '#1a1612',
+  surface2: '#2a231b',
+  ink: '#fbf4e1',
+  inkDim: '#b9a988',
+  inkFaint: '#7a6e55',
+  line: 'rgba(251, 244, 225, 0.14)',
+  tan: '#f0b878',
+}
+
+const mono = "'IBM Plex Mono', ui-monospace, monospace"
+const sans = "'IBM Plex Sans KR', system-ui, sans-serif"
+
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  background: B.surface2,
+  border: `1px solid ${B.line}`,
+  borderRadius: '3px',
+  padding: '10px 14px',
+  color: B.ink,
+  fontSize: '14px',
+  fontFamily: sans,
+  outline: 'none',
+  boxSizing: 'border-box',
+}
+
+const labelStyle: React.CSSProperties = {
+  display: 'block',
+  fontSize: '10px',
+  fontFamily: mono,
+  letterSpacing: '1.5px',
+  textTransform: 'uppercase',
+  color: B.tan,
+  marginBottom: '8px',
+}
+
+const sectionStyle: React.CSSProperties = {
+  background: B.surface,
+  border: `1px solid ${B.line}`,
+  borderRadius: '4px',
+  padding: '20px 24px',
+}
 
 export default function EditEntryPage() {
   const router = useRouter()
@@ -32,7 +73,6 @@ export default function EditEntryPage() {
         .select('*')
         .eq('id', id)
         .single()
-
       if (data) {
         setDate(data.date)
         setMyView(data.my_view ?? '')
@@ -47,107 +87,118 @@ export default function EditEntryPage() {
   useEffect(() => {
     if (loading) return
     const refMap: Record<string, React.RefObject<HTMLDivElement | null>> = {
-      my: myRef,
-      expert: expertRef,
-      sns: snsRef,
+      my: myRef, expert: expertRef, sns: snsRef,
     }
     refMap[focusTab]?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [loading, focusTab])
 
   async function handleSave() {
-    if (!myView.trim()) {
-      alert('나의 관점을 입력해주세요!')
-      return
-    }
+    if (!myView.trim()) { alert('나의 관점을 입력해주세요!'); return }
     setSaving(true)
     const { error } = await supabase
       .from('entries')
       .update({ date, my_view: myView, sns_view: snsView, expert_view: expertView })
       .eq('id', id)
-
-    if (error) {
-      alert('저장 중 오류가 발생했어요. 다시 시도해주세요.')
-      setSaving(false)
-      return
-    }
+    if (error) { alert('저장 중 오류가 발생했어요.'); setSaving(false); return }
     router.push(`/entry/${id}`)
   }
 
-  if (loading) return <main className="max-w-2xl mx-auto px-4 py-10"><p className="text-gray-400">불러오는 중...</p></main>
+  if (loading) return (
+    <p style={{ color: B.inkFaint, fontFamily: sans }}>불러오는 중...</p>
+  )
 
   return (
-    <main className="max-w-2xl mx-auto px-4 py-10">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">✏️ 일지 수정하기</h1>
-        <p className="text-gray-500 mt-1">{date} 일지를 수정해요</p>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div>
+        <div style={{ fontFamily: mono, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: B.tan, marginBottom: '8px' }}>
+          EDIT · 수정하기
+        </div>
+        <p style={{ fontSize: '13px', color: B.inkFaint, fontFamily: sans, margin: 0 }}>{date} 일지를 수정해요</p>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <div>
-          <label className="text-sm font-medium mb-1 block">날짜</label>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="border rounded-md px-3 py-2 text-sm w-full"
-          />
-        </div>
-
-        <div ref={myRef}>
-          <Card className={focusTab === 'my' ? 'ring-2 ring-black' : ''}>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">🙋 나의 관점</CardTitle>
-              <p className="text-xs text-gray-400">오늘 배운 것, 만든 것, 막힌 것을 내 말로 자유롭게</p>
-            </CardHeader>
-            <CardContent>
-              <Textarea
-                value={myView}
-                onChange={(e) => setMyView(e.target.value)}
-                rows={10}
-              />
-            </CardContent>
-          </Card>
-        </div>
-
-        <div ref={snsRef}>
-          <Card className={focusTab === 'sns' ? 'ring-2 ring-black' : ''}>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">📱 SNS 포스팅</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Textarea
-                value={snsView}
-                onChange={(e) => setSnsView(e.target.value)}
-                rows={6}
-              />
-            </CardContent>
-          </Card>
-        </div>
-
-        <div ref={expertRef}>
-          <Card className={focusTab === 'expert' ? 'ring-2 ring-black' : ''}>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">👔 전문가 요약</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Textarea
-                value={expertView}
-                onChange={(e) => setExpertView(e.target.value)}
-                rows={4}
-              />
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="flex gap-3 justify-end">
-          <Button variant="outline" onClick={() => router.push(`/entry/${id}`)}>
-            취소
-          </Button>
-          <Button onClick={handleSave} disabled={saving}>
-            {saving ? '저장 중...' : '💾 저장하기'}
-          </Button>
-        </div>
+      {/* 날짜 */}
+      <div>
+        <label style={labelStyle}>날짜</label>
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          style={{ ...inputStyle, colorScheme: 'dark' }}
+        />
       </div>
-    </main>
+
+      {/* 나의 관점 */}
+      <div ref={myRef} style={{
+        ...sectionStyle,
+        outline: focusTab === 'my' ? `2px solid ${B.tan}` : 'none',
+      }}>
+        <label style={labelStyle}>나의 관점</label>
+        <p style={{ fontSize: '12px', color: B.inkFaint, fontFamily: sans, marginBottom: '12px', marginTop: 0 }}>
+          오늘 배운 것, 만든 것, 막힌 것을 내 말로 자유롭게
+        </p>
+        <textarea
+          value={myView}
+          onChange={(e) => setMyView(e.target.value)}
+          rows={10}
+          style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.7 }}
+        />
+      </div>
+
+      {/* SNS */}
+      <div ref={snsRef} style={{
+        ...sectionStyle,
+        outline: focusTab === 'sns' ? `2px solid ${B.tan}` : 'none',
+      }}>
+        <label style={labelStyle}>SNS 포스팅</label>
+        <textarea
+          value={snsView}
+          onChange={(e) => setSnsView(e.target.value)}
+          rows={6}
+          style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.7 }}
+        />
+      </div>
+
+      {/* 전문가 요약 */}
+      <div ref={expertRef} style={{
+        ...sectionStyle,
+        outline: focusTab === 'expert' ? `2px solid ${B.tan}` : 'none',
+      }}>
+        <label style={labelStyle}>전문가 요약</label>
+        <textarea
+          value={expertView}
+          onChange={(e) => setExpertView(e.target.value)}
+          rows={4}
+          style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.7 }}
+        />
+      </div>
+
+      {/* 버튼 */}
+      <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+        <button
+          onClick={() => router.push(`/entry/${id}`)}
+          style={{
+            fontSize: '12px', fontFamily: mono,
+            color: B.inkDim, background: 'transparent',
+            border: `1px solid ${B.line}`, borderRadius: '3px',
+            padding: '8px 20px', cursor: 'pointer',
+          }}
+        >
+          취소
+        </button>
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          style={{
+            fontSize: '12px', fontFamily: mono,
+            color: B.bg, background: B.tan,
+            border: 'none', borderRadius: '3px',
+            padding: '8px 20px', cursor: saving ? 'not-allowed' : 'pointer',
+            opacity: saving ? 0.7 : 1,
+          }}
+        >
+          {saving ? '저장 중...' : '저장하기'}
+        </button>
+      </div>
+    </div>
   )
 }
